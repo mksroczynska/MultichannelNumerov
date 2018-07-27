@@ -1,0 +1,21 @@
+cmake_minimum_required(VERSION 3.6)
+
+project(numerov)
+
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -fopenmp -O3 ")
+
+#set(SOURCE_FILES main.cpp Parameters.cpp Parameters.h ConstantGridSolver.cpp ConstantGridSolver.h NonconstantGridSolver.cpp NonconstantGridSolver.h Solver.cpp Solver.h)
+set(SOURCE_FILES main.cpp Parameters.cpp Parameters.h ConstantGridSolver.cpp ConstantGridSolver.h)
+add_executable(numerov ${SOURCE_FILES})
+set(LIBS -larmadillo)
+
+# Locate GTest
+find_package(GTest REQUIRED)
+include_directories(${GTEST_INCLUDE_DIRS})
+target_link_libraries(${PROJECT_NAME} ${LIBS} ${GTEST_LIBRARIES})
+
+
+
+# Link run_tests with what we want to test and the GTest and pthread library
+add_executable(run_tests tests.cpp Parameters.cpp Parameters.h ConstantGridSolver.cpp ConstantGridSolver.h ParametersTests.h ConstantGridSolverTests.h)
+target_link_libraries(run_tests ${GTEST_LIBRARIES} ${LIBS} pthread)
