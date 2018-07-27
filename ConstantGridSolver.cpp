@@ -40,7 +40,7 @@ arma::cx_mat ConstantGridSolver::fwdIteration(const arma::cx_mat &B, double E) {
 
     arma::cx_mat R0Inv, RBef;
     if(params.getNSymmetries() == 0){
-        R0Inv  = arma::zeros(params.getNChannels(), params.getNChannels());
+        R0Inv  = arma::cx_mat(params.getNChannels(), params.getNChannels(), arma::fill::zeros);
     }
     else{
         try {
@@ -96,15 +96,15 @@ arma::cx_mat ConstantGridSolver::calculateS(const arma::cx_mat R_N, double E) {
     return S;
 }
 
-void ConstantGridSolver::saveS(const arma::cx_mat &S, const std::string S_type, const double E, const std::string directory) {
+void ConstantGridSolver::saveS(const arma::cx_mat &S, const std::string S_type, const int E, const std::string directory) {
 
     arma::mat reS = arma::real(S);
     arma::mat imS = arma::imag(S);
 
-    auto filenameReS = directory + "re_S" + S_type + std::to_string(E) + ".dat";
+    auto filenameReS = directory + "re_S" + std::to_string(E) + ".dat";
     reS.save(filenameReS, arma::raw_ascii);
 
-    auto filenameImS = directory + "im_S" + S_type + std::to_string(E) + ".dat";
+    auto filenameImS = directory + "im_S" + std::to_string(E) + ".dat";
     imS.save(filenameImS, arma::raw_ascii);
 
 }
@@ -183,14 +183,14 @@ arma::cx_mat ConstantGridSolver::calculateEP(int ind_x, double E) {
 
 void ConstantGridSolver::solveForEnergies(std::string directory) {
 
-    for(int i = 0; i < params.getNSymmetries(); i++){
+    for(int i = 0; i < params.getNSymmetries()+1; i++){
         auto B = params.getB(i);
         for (int j = 0; j < params.getNE(); ++j) {
             auto E = params.getE(j);
             try{
                 auto R_N = fwdIteration(B, E);
                 auto S = calculateS(R_N, E);
-                saveS(S, "_sym=" + std::to_string(i) + "_E=", E, directory );
+                saveS(S, "_sym=" + std::to_string(i) + "_E=", j, directory );
             }
             catch(std::runtime_error &ex){
                 std::cout << "Problem with solving for energy: " << E << '\n';

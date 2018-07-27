@@ -165,8 +165,9 @@ public:
     }
 
     arma::cx_mat getB(int i) const {
-        if(i >= nSymmetries)
+        if(i >= nSymmetries and i > 0)
             throw std::invalid_argument("B_" + std::to_string(i) + " does not exist since the number of symmetries = " + std::to_string(nSymmetries));
+        if(i == 0 and nSymmetries == 0) return arma::cx_mat(nChannels, nChannels, arma::fill::zeros);
         return B.slice(i);
     }
 

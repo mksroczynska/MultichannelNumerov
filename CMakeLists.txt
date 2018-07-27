@@ -8,11 +8,12 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -fopenmp -O3 ")
 set(SOURCE_FILES main.cpp Parameters.cpp Parameters.h ConstantGridSolver.cpp ConstantGridSolver.h)
 add_executable(numerov ${SOURCE_FILES})
 set(LIBS -larmadillo)
+target_link_libraries(${PROJECT_NAME} ${LIBS} )
 
 # Locate GTest
 find_package(GTest REQUIRED)
 include_directories(${GTEST_INCLUDE_DIRS})
-target_link_libraries(${PROJECT_NAME} ${LIBS} ${GTEST_LIBRARIES})
+
 
 
 
