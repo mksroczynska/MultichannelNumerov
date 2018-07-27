@@ -104,6 +104,7 @@ void Parameters::loadParams(std::string filename) {
             fileP >> nChannels;
             if (nChannels <= 0)
                 throw std::logic_error("Invalid number of channels: " + std::to_string(nChannels));
+            nSymmetries = 0;
             if (checkNumberOfRowsInFile(filename, 6) or checkNumberOfRowsInFile(filename, 7)) {
                 fileP >> nSymmetries;
                 if (nSymmetries < 0)
@@ -212,6 +213,7 @@ void Parameters::loadB(std::string filename) {
         if (not success_loading_B)
             throw std::logic_error("File with B_" + std::to_string(i) + " matrix does not exist");
     }
+
     B = B_temp;
 
 }

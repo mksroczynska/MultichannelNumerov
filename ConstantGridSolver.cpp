@@ -39,13 +39,19 @@ arma::cx_mat ConstantGridSolver::calculateU(int j, double E) {
 arma::cx_mat ConstantGridSolver::fwdIteration(const arma::cx_mat &B, double E) {
 
     arma::cx_mat R0Inv, RBef;
-    try {
-        R0Inv = arma::inv(calculateU(0, E)) * (params.Id() + B); //R_0^{-1}
-    }catch(std::invalid_argument &ex){
-        throw ex;
-    }catch(...){
-        throw std::runtime_error("Error occured when calculating R0_INV for E = " + std::to_string(E));
+    if(params.getNSymmetries() == 0){
+        R0Inv  = arma::zeros(params.getNChannels(), params.getNChannels());
     }
+    else{
+        try {
+            R0Inv = arma::inv(calculateU(0, E)) * (params.Id() + B); //R_0^{-1}
+        }catch(std::invalid_argument &ex){
+            throw ex;
+        }catch(...){
+            throw std::runtime_error("Error occured when calculating R0_INV for E = " + std::to_string(E));
+        }
+    }
+
     try{
         RBef = calculateU(1, E) - R0Inv;  //R_1
     }catch(std::invalid_argument &ex){
