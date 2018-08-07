@@ -43,7 +43,7 @@ class Parameters {
      */
     std::vector<double> EList;
     /*!
-     * \brief hbar^2/2m_a.
+     * \brief hbar^2/2m.
      */
     double unit;
     /*!
@@ -55,14 +55,14 @@ class Parameters {
      */
     int nSymmetries;
     /*!
-     * \brief Cube storing V matrices for each x
+     * \brief Cube storing V matrices for each x.
      */
     arma::cx_cube V;
     /*!
      * \brief EList length.
      */
     unsigned int nE;
-    /*
+    /*!
      * \brief How many grid points.
      */
     int nx;

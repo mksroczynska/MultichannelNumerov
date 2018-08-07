@@ -139,8 +139,6 @@ void ConstantGridSolver::modifyCCnj(arma::cx_mat &n1, arma::cx_mat &n0, arma::cx
 }
 
 ConstantGridSolver::ConstantGridSolver(const Parameters& params) : params(params) {
-    ;
-    std::cout << "ConstantGridSolver done\n";
 }
 
 arma::cx_mat ConstantGridSolver::calculateEM(int ind_x, double E) {
@@ -185,18 +183,36 @@ void ConstantGridSolver::solveForEnergies(std::string directory) {
 
     for(int i = 0; i < params.getNSymmetries()+1; i++){
         auto B = params.getB(i);
-        for (int j = 0; j < params.getNE(); ++j) {
+        std::vector<std::vector<double>> data(params.getNE());
+
+//#pragma omp parallel for
+
+        for ( int j = 0; j < params.getNE(); ++j) {
             auto E = params.getE(j);
+            std::vector<double> row;
             try{
                 auto R_N = fwdIteration(B, E);
                 auto S = calculateS(R_N, E);
-                saveS(S, "_sym=" + std::to_string(i) + "_E=", j, directory );
+                auto S_value = S(0,0);
+                row.push_back(E);
+                row.push_back(std::real(S_value));
+                row.push_back(std::imag(S_value));
+                data[j]=row;
+                //saveS(S, "_sym=" + std::to_string(i) + "_E=", j, directory );
             }
             catch(std::runtime_error &ex){
                 std::cout << "Problem with solving for energy: " << E << '\n';
                 throw ex;
             }
         }
+        std::ofstream file(directory);
+        for(auto row:data){
+            for(auto value:row){
+                file << value << " ";
+            }
+            file << "\n";
+        }
+        file.close();
     }
 
 }

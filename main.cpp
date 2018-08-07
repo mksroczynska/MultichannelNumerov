@@ -31,7 +31,7 @@ int main() {
         Parameters parameters(filenames);
         ConstantGridSolver solver(parameters);
 
-        solver.solveForEnergies(directory+ "S//case" + std::to_string(i) + "//");
+        solver.solveForEnergies(directory+ "S//S_" + std::to_string(i) + ".dat");
         i++;
     }
 
