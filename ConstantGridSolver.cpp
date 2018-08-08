@@ -13,7 +13,9 @@
 
 /*!
  * This method calculates \f$ \mathbf{U} \f$ matrix for given index j using the set of parameters provided to the ConstantGridSolver
- * object.
+ * object according to the following formula:
+ * \f{equation}{
+ * \mathbf{U}_j = 12 (\mathbf{I} - \mathbf{T}_j){-1} - 10 \mathbf{I}. \f}
  * \param[in] j - index on the grid of x value
  * \param[in] E - energy value
  * \return \f$ \mathbf{U}(x_j, E) \f$
@@ -147,10 +149,15 @@ void ConstantGridSolver::saveS(const arma::cx_mat &S, const int E, const std::st
 }
 
 /*!
- * This method calculates T matrix for given index j and set of parameters
- * \params[in] j - index of x value for which T is calculated
- * \params[in] params - Parameters object for which T is calculated
- * \return T matrix
+ * This method calculates \f$ \mathbf{T}\f$ matrix for a given point \f$x_j\f$ on the grid and given energy
+ * according to the formula:
+ * \f{equation}{
+ * \mathbf{T}_j = -\frac{dx}{12}\mathbf{Q}_j.
+ *  \f}
+ * @param j - index of the value on the grid
+ * @param E - energy
+ * @return \f$ \mathbf{T}(x_j, E)\f$
+ * @throws std::invalid_argument if the index \f$ j \f$ is wrong
  */
 arma::cx_mat ConstantGridSolver::calculateT(int j, double E) const{
     arma::cx_mat V;
