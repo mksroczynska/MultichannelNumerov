@@ -8,7 +8,7 @@
 #include <gtest/gtest.h>
 #include "Parameters.h"
 
-std::string testing_data_dir = "//home//martas//Dropbox//Doktoratowe//AIcollisions//MultichannelNumerovAIWithTests_1//MultichannelNumerovAIWithTests//TestData//";
+std::string testing_data_dir = "//home//martas//Dropbox//Doktoratowe//AIcollisions//MultichannelNumerovAIWithTests_1//MultichannelNumerovAIWithTests//Tests//TestData//";
 
 class Parameters_loadParams_Test: public ::testing::Test {
     public:

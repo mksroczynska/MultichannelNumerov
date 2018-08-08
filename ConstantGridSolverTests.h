@@ -295,7 +295,7 @@ TEST_F(ConstantGridSolver_fwdIteration_Test, throwsExceptionIfCannotComputeR0Inv
 
 //*************************solveForEnergies()*******************
 TEST_F(ConstantGridSolver_solveForEnergies_Test, doesNotThrowIfEverythingGood){
-    EXPECT_NO_THROW(solver.solveForEnergies("//home//martas//Dropbox//Doktoratowe//AIcollisions//MultichannelNumerovAIWithTests_1//MultichannelNumerovAIWithTests//TestData//"));
+    EXPECT_NO_THROW(solver.solveForEnergies("//home//martas//Dropbox//Doktoratowe//AIcollisions//MultichannelNumerovAIWithTests_1//MultichannelNumerovAIWithTests//Tests//TestData//"));
 }
 
 #endif
