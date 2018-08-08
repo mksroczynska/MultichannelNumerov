@@ -7,15 +7,17 @@
 #include "ConstantGridSolver.h"
 /*!
  * \file
- * \brief Definitions of Solver class methods.
+ * \brief Definitions of ConstantGridSolver class methods.
  *
  */
 
 /*!
- * This method calculates U matrix for given index j and set of parameters
- * \param[in] j - index of x value for which U is calculated
- * \param[in] params - Parameters object for which U is calculated
- * \return U matrix
+ * This method calculates \f$ \mathbf{U} \f$ matrix for given index j using the set of parameters provided to the ConstantGridSolver
+ * object.
+ * \param[in] j - index on the grid of x value
+ * \param[in] E - energy value
+ * \return \f$ \mathbf{U}(x_j, E) \f$
+ * \throws std::invalid_argument if \f$ x_j\f$ does not exist
 */
 arma::cx_mat ConstantGridSolver::calculateU(int j, double E) {
     arma::cx_mat T,  IT;
@@ -30,10 +32,22 @@ arma::cx_mat ConstantGridSolver::calculateU(int j, double E) {
 }
 
 /*!
- * This method calculates and stores the sets of matrices R (as \link Solver::RList RList\endlink), F (\link Solver::FList
- * PsiList\endlink), Psi (\link Solver::PsiList PsiList\endlink) and sets of vectors f and psi (\link Solver::psiList psiList\endlink).
- * The results are stored (as the attributes of the Solver object), but are not yet saved to file.
- * \param[in] &params - Parameters object to perform calculations for.
+ * This method performs the Numerov iteration for a given energy for a case of some particular symmetry.
+ *
+ *  The initial value \f$ \mathbf{R}_0^{-1} \f$:
+ *  \f{itemize}{
+ *   \item $ \mathbf{R}_0^{-1} = \mathbf{0} $ if no symmetries
+ *
+ *   \item $ \mathbf{R}_0^{-1} = \mathbf{U}_0^{-1}(\mathbf{I} + \mathbf{B}) $ if the symmetry is described by
+ *  $ \mathbf{B} $
+ *  \f}
+ *
+ *  Every value depends on the previous one: \f$ \mathbf{R}_j = \mathbf{U}_j - \mathbf{R}_{j-1}^{-1}. \f$
+ *  \param[in] B - \f$ \mathbf{B}\f$ matrix to calculate the initial value
+ *  \param[in] E - energy
+ *  \return \f$ \mathbf{R}_{N-1}\f$
+ *  \throws std::invalid_argument if \f$ \mathbf{U}_i\f$ cannot be calculated for given iteration \f$i\f$
+ *  \throws std::runtime_error
  */
 
 arma::cx_mat ConstantGridSolver::fwdIteration(const arma::cx_mat &B, double E) {
@@ -75,6 +89,17 @@ arma::cx_mat ConstantGridSolver::fwdIteration(const arma::cx_mat &B, double E) {
     return Ri;
 }
 
+/*!
+ * This method calculates the scattering matrix \f$ \mathbf{S}(E)\f$.
+ * Its value is given by
+ * \f{equation}{ \mathbf{S} = (\mathbf{R}_{N-1} \mathbf{e}^+_{N-1} - \mathbf{e}^+_{N}){-1} (\mathbf{R}_{N-1}\mathbf{e}^-_{N-1} - \mathbf{e}^-_{N}) \f}
+ *
+ * where \f$  \mathbf{e}^{\pm}_{i} =  (\mathbf{I} -  \mathbf{T}_{i}) \mathbf{E}^{\pm}_{i}\f$.
+ * @param R_N - \f$ \mathbf{R}_{N-1}\f$
+ * @param E - energy
+ * @return \f$ \mathbf{S}\f$
+ * @throws std::runtime_error if there is a problem with calculating
+ */
 arma::cx_mat ConstantGridSolver::calculateS(const arma::cx_mat R_N, double E) {
 
     arma::cx_mat ITN = params.Id() - calculateT(-2, E);
@@ -95,8 +120,20 @@ arma::cx_mat ConstantGridSolver::calculateS(const arma::cx_mat R_N, double E) {
 
     return S;
 }
-
-void ConstantGridSolver::saveS(const arma::cx_mat &S, const std::string S_type, const int E, const std::string directory) {
+/*!
+ * This method saves the scattering matrix in a given directory.
+ * The real and imaginary part of \f$ \mathbf{S} \f$ are saved in separate files.
+ *
+ * Paths:
+ *
+ * \f$ Re(\mathbf{S}) \f$: directory/re_SE.dat (E is the value of the energy)
+ * \f$ Im(\mathbf{S}) \f$: directory/im_SE.dat (E is the value of the energy)
+ *
+ * @param S - scattering matrix to be saved
+ * @param E - energy
+ * @param directory - where to save the files
+ */
+void ConstantGridSolver::saveS(const arma::cx_mat &S, const int E, const std::string directory) {
 
     arma::mat reS = arma::real(S);
     arma::mat imS = arma::imag(S);

@@ -66,7 +66,7 @@ public:
     /*!
      * \brief Saves \f$ \mathbf{S} \f$ matrix (Im and Re part separately).
      */
-    void saveS(const arma::cx_mat &S, const std::string S_type, const int E, const std::string directory);
+    void saveS(const arma::cx_mat &S, const int E, const std::string directory);
 
     void setParameters(const Parameters &parameters) {
         params = parameters;
