@@ -141,12 +141,12 @@ void ConstantGridSolver::modifyCCnj(arma::cx_mat &n1, arma::cx_mat &n0, arma::cx
 ConstantGridSolver::ConstantGridSolver(const Parameters& params) : params(params) {
 }
 
-arma::cx_mat ConstantGridSolver::calculateEM(int ind_x, double E) {
+arma::cx_mat ConstantGridSolver::calculateEM(int j, double E) {
     arma::cx_mat em = params.Id();
     double k_x0;
     for (unsigned int i = 0; i < params.getNChannels(); ++i) {
         try{
-            k_x0 = params.kappa(i, i, ind_x, E) * params.x(ind_x);
+            k_x0 = params.kappa(i, i, j, E) * params.x(j);
         }
         catch(std::invalid_argument &ex){
             throw ex;
@@ -160,12 +160,12 @@ arma::cx_mat ConstantGridSolver::calculateEM(int ind_x, double E) {
     return em;
 }
 
-arma::cx_mat ConstantGridSolver::calculateEP(int ind_x, double E) {
+arma::cx_mat ConstantGridSolver::calculateEP(int j, double E) {
     arma::cx_mat ep = params.Id();
     double k_x0;
     for (unsigned int i = 0; i < params.getNChannels(); ++i) {
         try{
-            k_x0 = params.kappa(i, i, ind_x, E) * params.x(ind_x);
+            k_x0 = params.kappa(i, i, j, E) * params.x(j);
         }
         catch(std::invalid_argument &ex){
             throw ex;
