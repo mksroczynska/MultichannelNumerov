@@ -2,7 +2,7 @@
 #define NUMEROV_CONSTANGRIDSOLVERTESTS_H
 
 #include <gtest/gtest.h>
-#include "ConstantGridSolver.h"
+#include "../ConstantGridSolver.h"
 
 
 class ConstantGridSolver_Test: public ::testing::Test{

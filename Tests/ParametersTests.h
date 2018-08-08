@@ -6,7 +6,7 @@
 #define NUMEROV_PARAMETERSTESTS_H
 
 #include <gtest/gtest.h>
-#include "Parameters.h"
+#include "../Parameters.h"
 
 std::string testing_data_dir = "//home//martas//Dropbox//Doktoratowe//AIcollisions//MultichannelNumerovAIWithTests_1//MultichannelNumerovAIWithTests//Tests//TestData//";
 
