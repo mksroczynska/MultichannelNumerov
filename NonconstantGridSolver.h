@@ -22,6 +22,10 @@ class NonconstantGridSolver {
     int n;
     std::vector<double> gridPoints;
     /*!
+     * \brief calculates \f$ \mathbf{Q} \f$ matrix
+     */
+     arma::cx_mat Q(double x, double E);
+    /*!
      * \brief calculates T matrix for given x (uses interpolation from Parameters)
      */
     arma::cx_mat calculateT(double x, double E, double dx);
