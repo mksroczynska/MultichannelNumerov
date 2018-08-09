@@ -15,7 +15,7 @@
  * This method calculates \f$ \mathbf{U} \f$ matrix for given index j using the set of parameters provided to the ConstantGridSolver
  * object according to the following formula:
  * \f{equation}{
- * \mathbf{U}_j = 12 (\mathbf{I} - \mathbf{T}_j){-1} - 10 \mathbf{I}. \f}
+ * \mathbf{U}_j = 12 (\mathbf{I} - \mathbf{T}_j)^{-1} - 10 \mathbf{I}. \f}
  * \param[in] j - index on the grid of x value
  * \param[in] E - energy value
  * \return \f$ \mathbf{U}(x_j, E) \f$
@@ -185,6 +185,19 @@ void ConstantGridSolver::modifyCCnj(arma::cx_mat &n1, arma::cx_mat &n0, arma::cx
 ConstantGridSolver::ConstantGridSolver(const Parameters& params) : params(params) {
 }
 
+/*!
+ * This method calculates \f$ \mathbf{E}^- \f$ matrix for for a given point \f$x_j\f$ on the grid and given energy.
+ * The matrix is diagonal and its elements are calculated the following way:
+ * \f{itemize}{
+ * \item $ \mathbf{E}^-_{n, n}(x_j, E) = \exp(-i k x_j)$ if channel $n$ is open
+ * \item $ \mathbf{E}^-_{n, n}(x_j, E) = \cosh(k x_j)$ if channel $n$ is closed
+ * \item $ \mathbf{E}^-_{n, m}(x_j, E) = 0$ for $n\neq m$
+ * \f}
+ * @param j - index of the value on the grid
+ * @param E - energy
+ * @return \f$ \mathbf{E}^-(x_j, E)\f$
+ * @throws std::invalid_argument if j is wrong
+ */
 arma::cx_mat ConstantGridSolver::calculateEM(int j, double E) {
     arma::cx_mat em = params.Id();
     double k_x0;
@@ -204,6 +217,19 @@ arma::cx_mat ConstantGridSolver::calculateEM(int j, double E) {
     return em;
 }
 
+/*!
+ * This method calculates \f$ \mathbf{E}^+ \f$ matrix for for a given point \f$x_j\f$ on the grid and given energy.
+ * The matrix is diagonal and its elements are calculated the following way:
+ * \f{itemize}{
+ * \item $ \mathbf{E}^+_{n, n}(x_j, E) = \exp(i k x_j)$ if channel $n$ is open
+ * \item $ \mathbf{E}^+_{n, n}(x_j, E) = \sinh(k x_j)$ if channel $n$ is closed
+ * \item $ \mathbf{E}^+_{n, m}(x_j, E) = 0$ for $n\neq m$
+ * \f}
+ * @param j - index of the value on the grid
+ * @param E - energy
+ * @return \f$ \mathbf{E}^+(x_j, E)\f$
+ * @throws std::invalid_argument if j is wrong
+ */
 arma::cx_mat ConstantGridSolver::calculateEP(int j, double E) {
     arma::cx_mat ep = params.Id();
     double k_x0;
