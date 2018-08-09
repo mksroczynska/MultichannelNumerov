@@ -18,5 +18,5 @@ include_directories(${GTEST_INCLUDE_DIRS})
 
 
 # Link run_tests with what we want to test and the GTest and pthread library
-add_executable(run_tests Tests/tests.cpp Parameters.cpp Parameters.h ConstantGridSolver.cpp ConstantGridSolver.h Tests/ParametersTests.h Tests/ConstantGridSolverTests.h)
+add_executable(run_tests Tests/tests.cpp Parameters.cpp Parameters.h ConstantGridSolver.cpp ConstantGridSolver.h Tests/ParametersTests.h Tests/ConstantGridSolverTests.h NonconstantGridSolverTests.h)
 target_link_libraries(run_tests ${GTEST_LIBRARIES} ${LIBS} pthread)
