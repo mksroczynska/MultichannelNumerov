@@ -5,7 +5,7 @@ project(numerov)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -fopenmp -O3 ")
 
 #set(SOURCE_FILES main.cpp Parameters.cpp Parameters.h ConstantGridSolver.cpp ConstantGridSolver.h NonconstantGridSolver.cpp NonconstantGridSolver.h Solver.cpp Solver.h)
-set(SOURCE_FILES main.cpp Parameters.cpp Parameters.h ConstantGridSolver.cpp ConstantGridSolver.h)
+set(SOURCE_FILES main.cpp Parameters.cpp Parameters.h ConstantGridSolver.cpp ConstantGridSolver.h NonconstantGridSolver.cpp NonconstantGridSolver.h)
 add_executable(numerov ${SOURCE_FILES})
 set(LIBS -larmadillo)
 target_link_libraries(${PROJECT_NAME} ${LIBS} )
