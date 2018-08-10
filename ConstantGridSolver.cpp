@@ -251,7 +251,9 @@ arma::cx_mat ConstantGridSolver::calculateEP(int j, double E) {
 
 void ConstantGridSolver::solveForEnergies(std::string directory) {
 
-    for(int i = 0; i < params.getNSymmetries()+1; i++){
+    //for(int i = 0; i < params.getNSymmetries(); i++)
+    int i = 0;
+    do {
         auto B = params.getB(i);
         std::vector<std::vector<double>> data(params.getNE());
 
@@ -283,7 +285,8 @@ void ConstantGridSolver::solveForEnergies(std::string directory) {
             file << "\n";
         }
         file.close();
-    }
+        i++;
+    }while(i < params.getNSymmetries());
 
 }
 

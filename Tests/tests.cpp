@@ -5,6 +5,7 @@
 #include <gtest/gtest.h>
 #include "ParametersTests.h"
 #include "ConstantGridSolverTests.h"
+#include "NonconstantGridSolverTests.h"
 
 
 int main(int argc, char **argv) {

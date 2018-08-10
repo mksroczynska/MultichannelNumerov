@@ -124,12 +124,12 @@ void Parameters::loadParams(std::string filename) {
         throw std::ios_base::failure("No required file with parameters: " + filename);
     }
 
-    std::cout << "***************************************************\n";
-    std::cout << "Loaded values of the parameters:\n";
-    std::cout << "xMin: " << xMin << "\nxMax: " << xMax << "\ndx: " << dx <<
-              "\nunit: " << unit << "\nnumber of channels: " << nChannels <<
-              "\nnumber of symmetries: " << nSymmetries << '\n' << "grid points per lambda: " << grid_points_per_lambda;
-    std::cout << "\n***************************************************\n";
+//    std::cout << "***************************************************\n";
+//    std::cout << "Loaded values of the parameters:\n";
+//    std::cout << "xMin: " << xMin << "\nxMax: " << xMax << "\ndx: " << dx <<
+//              "\nunit: " << unit << "\nnumber of channels: " << nChannels <<
+//              "\nnumber of symmetries: " << nSymmetries << '\n' << "grid points per lambda: " << grid_points_per_lambda;
+//    std::cout << "\n***************************************************\n";
 }
 
 void Parameters::loadE(std::string filename) {

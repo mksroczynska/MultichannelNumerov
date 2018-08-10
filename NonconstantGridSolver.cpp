@@ -5,7 +5,7 @@
 #include "NonconstantGridSolver.h"
 
 arma::cx_mat NonconstantGridSolver::calculateT(double x, double E, double dx) {
-    return -(1. / params.getUnit()) * dx * dx * (E * Id - params.getV(x)) / 12.;
+    return -(dx * dx * Q(x, E)) / 12.;
 }
 
 arma::cx_mat NonconstantGridSolver::calculateU(double x, double E, double dx) {
@@ -208,4 +208,10 @@ void NonconstantGridSolver::solveForEnergies() {
         plik << "\n";
     }
     plik.close();
+}
+
+arma::cx_mat NonconstantGridSolver::Q(double x, double E) {
+    arma::cx_mat V = params.getV(x);
+
+    return -1./params.getUnit() * (V - E * params.Id());
 }

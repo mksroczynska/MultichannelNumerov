@@ -17,10 +17,11 @@ class NonconstantGridSolver {
     /*!
      * \brief Set of parameters for which the calculations are performed.
      */
-    const Parameters &params;
+    Parameters params;
     arma::cx_mat Id;
     int n;
     std::vector<double> gridPoints;
+public:
     /*!
      * \brief calculates \f$ \mathbf{Q} \f$ matrix
      */
@@ -65,11 +66,14 @@ class NonconstantGridSolver {
      * Returns halved/double/the same value.
      */
     double changeDxIfNeeded(double xBef, double dxBef, double E);
+    void setParameters(const Parameters &parameters) {
+        params = parameters;
+    }
 
 
-public:
-    NonconstantGridSolver() = delete;
-    NonconstantGridSolver(const NonconstantGridSolver&) = delete;
+
+    NonconstantGridSolver() = default;
+    NonconstantGridSolver(const NonconstantGridSolver&) = default;
     ~NonconstantGridSolver() = default;
     /*!
      * \brief Constructor.
