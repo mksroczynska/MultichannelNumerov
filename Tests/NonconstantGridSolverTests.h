@@ -17,7 +17,7 @@ public:
         const std::vector<std::string> filenamesList= {
                 testing_data_dir + "good_file_with_params_nx=4.txt",
                 testing_data_dir + "good_EList_doubles.dat",
-                testing_data_dir + "good_V_two_channels_nx=4.txt",
+                testing_data_dir + "good_V_two_channels_nx=4_to_nonconstgrid.txt",
                 testing_data_dir + "good_B_two_channels"
         };
         const Parameters parameters_testing(filenamesList);
@@ -34,6 +34,12 @@ TEST_F(NonconstantGridSolver_Q_Test, returnsCorrectValueForCorrectParameters){
     EXPECT_TRUE(arma::approx_equal(expected_re, arma::real(Q), "absdiff", 0.0000001));
     EXPECT_TRUE(arma::approx_equal(expected_im, arma::imag(Q), "absdiff", 0.0000001));
 }
-
+class NonconstantGridSolver_generateGrid_Test: public NonconstantGridSolver_Test{};
+TEST_F(NonconstantGridSolver_generateGrid_Test, returnsCorrrectGridForCorrectValues){
+    auto grid = solver.generateGrid(15);
+    for(auto x: grid){
+        std::cout << x << ", ";
+    }
+}
 
 #endif //NUMEROV_NONCONSTANTGRIDSOLVERTESTS_H

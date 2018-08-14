@@ -23,6 +23,7 @@ Parameters::Parameters(std::vector<std::string> filenames) {
         }
         try{
             setXValues();
+            std::cout << "NX: " << NX() <<'\n';
         }catch(std::logic_error &exception){
             std::cout << "Error creating grid:\n" << exception.what();
         }
@@ -124,12 +125,12 @@ void Parameters::loadParams(std::string filename) {
         throw std::ios_base::failure("No required file with parameters: " + filename);
     }
 
-//    std::cout << "***************************************************\n";
-//    std::cout << "Loaded values of the parameters:\n";
-//    std::cout << "xMin: " << xMin << "\nxMax: " << xMax << "\ndx: " << dx <<
-//              "\nunit: " << unit << "\nnumber of channels: " << nChannels <<
-//              "\nnumber of symmetries: " << nSymmetries << '\n' << "grid points per lambda: " << grid_points_per_lambda;
-//    std::cout << "\n***************************************************\n";
+    std::cout << "***************************************************\n";
+    std::cout << "Loaded values of the parameters:\n";
+    std::cout << "xMin: " << xMin << "\nxMax: " << xMax << "\ndx: " << dx <<
+              "\nunit: " << unit << "\nnumber of channels: " << nChannels <<
+              "\nnumber of symmetries: " << nSymmetries << '\n' << "grid points per lambda: " << grid_points_per_lambda;
+    std::cout << "\n***************************************************\n";
 }
 
 void Parameters::loadE(std::string filename) {
@@ -220,25 +221,43 @@ void Parameters::loadB(std::string filename) {
 
 arma::cx_mat Parameters::getV(double x) const {
     // 1) x out of range
-    if (x < xMin or x > xMax)
+    if (x < xMin or x > xMax+0.5 * dx)
         throw std::invalid_argument("Interpolation: incorrect value of argument: " + std::to_string(x));
 
     // 2) x on grid
     auto it = std::find(xValues.begin(), xValues.end(), x);
     if (it != xValues.end()) {
-        return getVMatrix(it - xValues.begin());
+        arma::cx_mat res;
+        try{
+            res = getVMatrix(it - xValues.begin());
+            if(x == xMax) std::cout << "it: " << it-xValues.begin() << "\n";
+        }catch(...){
+            std::cout << "Error in interpolation on grid for x = " << x << "\n";
+        }
+        return res;
+    }
+    else if(x > xMax){
+        return getVMatrix(-1);
     }
         // 3) interpolate
     else {
-        auto index_2 =
-                std::find_if(xValues.begin(), xValues.end(), [x](double value) { return x < value; }) - xValues.begin();
-        auto index_1 = index_2 - 1;
-        arma::cx_mat Y1 = V.slice(index_1);
-        arma::cx_mat Y2 = V.slice(index_2);
-        auto x1 = xValues.at(index_1);
-        auto x2 = xValues.at(index_2);
-        arma::cx_mat A = (Y2 - Y1) / (x2 - x1);
-        arma::cx_mat B = Y2 - x2 * A;
+        arma::cx_mat A;
+        arma::cx_mat B;
+        if(x == xMax) std::cout << "For xMax: not on the grid\n";
+        try {
+            auto index_2 =
+                    std::find_if(xValues.begin(), xValues.end(), [x](double value) { return x < value; }) -
+                    xValues.begin();
+            auto index_1 = index_2 - 1;
+            arma::cx_mat Y1 = V.slice(index_1);
+            arma::cx_mat Y2 = V.slice(index_2);
+            auto x1 = xValues.at(index_1);
+            auto x2 = xValues.at(index_2);
+            A = (Y2 - Y1) / (x2 - x1);
+            B = Y2 - x2 * A;
+        }catch(...){
+            std::cout << "Error in interpolation for x = " << x << "\n";
+        }
 
         return A * x + B;
     }
@@ -257,9 +276,15 @@ double Parameters::kappa(int n1, int n2, double x, double E) const {
     if (n1 >= nChannels or n1 < 0 or n2 >= nChannels or n2 < 0)
         throw std::invalid_argument(
                 "Cannot calculate kappa for (" + std::to_string(n1) + "," + std::to_string(n2) + "): wrong index");
-    if (x < xMin or x > xMax)
-        throw std::invalid_argument("Cannot calculate kappa for x =" + std::to_string(x) + ": wrong value of x");
-    auto v = ((getV(x))(n1, n2)).real();
+//    if (x < xMin or x > xMax)
+//        throw std::invalid_argument("Cannot calculate kappa for x =" + std::to_string(x) + ": wrong value of x");
+    arma::cx_mat V;
+    try{
+        V = getV(x);
+    }catch(std::invalid_argument &e){
+        throw e;
+    }
+    auto v = ((V)(n1, n2)).real();
     if (E - v > 0)
         return std::sqrt(1./unit  * (E - v));
     else
@@ -278,7 +303,7 @@ void Parameters::setXValues() {
         throw std::logic_error("Invalid value of dx");
     if (xMax - xMin < dx)
         throw std::logic_error("Invalid values of xMin, xMax and dx");
-    for (auto value = xMin; value <= xMax; value += dx) {
+    for (auto value = xMin; value < xMax + 0.5*dx; value += dx) {
         xValues.push_back(value);
     }
     nx = xValues.size();

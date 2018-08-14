@@ -3,6 +3,7 @@
 #include <fstream>
 #include "Parameters.h"
 #include "ConstantGridSolver.h"
+#include "NonconstantGridSolver.h"
 
 using namespace std;
 
@@ -29,9 +30,10 @@ int main() {
                 directory + v_data
         };
         Parameters parameters(filenames);
-        ConstantGridSolver solver(parameters);
+       NonconstantGridSolver solver(parameters);
 
-        solver.solveForEnergies(directory+ "S//S_" + std::to_string(i) + ".dat");
+
+        solver.solveForEnergies(directory+ "S//S_" + std::to_string(i) + "NCtest.dat");
         i++;
     }
 

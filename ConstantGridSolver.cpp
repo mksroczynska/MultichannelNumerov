@@ -256,10 +256,10 @@ void ConstantGridSolver::solveForEnergies(std::string directory) {
     do {
         auto B = params.getB(i);
         std::vector<std::vector<double>> data(params.getNE());
+int j;
+#pragma omp parallel for
 
-//#pragma omp parallel for
-
-        for ( int j = 0; j < params.getNE(); ++j) {
+        for ( j = 0; j < params.getNE(); ++j) {
             auto E = params.getE(j);
             std::vector<double> row;
             try{

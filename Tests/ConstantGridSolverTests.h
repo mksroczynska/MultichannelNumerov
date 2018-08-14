@@ -62,7 +62,7 @@ TEST_F(ConstantGridSolver_calculateT_Test, throwsInvalidArgumentExceptionForInco
 
 
 
-//************************calculateU(i, E)*******************
+//************************U(i, E)*******************
 
 TEST_F(ConstantGridSolver_calculateU_Test, worksCorrectForCorrectArguments){
     arma::cx_mat U = solver.calculateU(0, 5);

@@ -213,6 +213,10 @@ public:
     double requiredDx(double x, double E) const;
     friend class Parameters_requiredDX_Test;
 
+    const std::vector<double> &getXValues() const {
+        return xValues;
+    }
+
 };
 
 
