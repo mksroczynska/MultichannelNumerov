@@ -87,6 +87,7 @@ public:
      * \brief Performs Numerov calculations for a given set of parameters for all energies.
      */
     void solveForEnergies(std::string directory);
+    std::string tostring_E_S(arma::cx_mat S, double E);
 
 };
 

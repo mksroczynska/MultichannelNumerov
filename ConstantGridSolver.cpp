@@ -255,21 +255,16 @@ void ConstantGridSolver::solveForEnergies(std::string directory) {
     int i = 0;
     do {
         auto B = params.getB(i);
-        std::vector<std::vector<double>> data(params.getNE());
-int j;
-#pragma omp parallel for
+        std::vector<std::string> data(params.getNE());
+        int j;
+        #pragma omp parallel for
 
         for ( j = 0; j < params.getNE(); ++j) {
             auto E = params.getE(j);
-            std::vector<double> row;
             try{
                 auto R_N = fwdIteration(B, E);
                 auto S = calculateS(R_N, E);
-                auto S_value = S(0,0);
-                row.push_back(E);
-                row.push_back(std::real(S_value));
-                row.push_back(std::imag(S_value));
-                data[j]=row;
+                data[j] = tostring_E_S(S, E);
                 //saveS(S, "_sym=" + std::to_string(i) + "_E=", j, directory );
             }
             catch(std::runtime_error &ex){
@@ -279,15 +274,35 @@ int j;
         }
         std::ofstream file(directory);
         for(auto row:data){
-            for(auto value:row){
-                file << value << " ";
-            }
+            file << row;
             file << "\n";
         }
         file.close();
         i++;
     }while(i < params.getNSymmetries());
 
+}
+
+/*!
+ * Single row for the file with results.
+ * Format: E re(S(0,0)) re(S(0,1)) ... re(S(n, 0)... re(S(n, n)) im(S(0,0)) im(S(0,1)) ... im(S(n, 0)... im(S(n, n))
+ * @param S
+ * @param E
+ * @return
+ */
+std::string ConstantGridSolver::tostring_E_S(arma::cx_mat S, double E) {
+    std::string S_re = "";
+    std::string S_im = "";
+    int n = std::sqrt(S.size());
+    for (int i = 0; i < n; ++i) {
+        for(int j = 0; j < n; ++j){
+           S_re += std::to_string(std::real(S(i, j)));
+           S_re += " ";
+           S_im += std::to_string(std::imag(S(i, j)));
+           S_im += " ";
+        }
+    }
+    return std::to_string(E) + " " + S_re + S_im;
 }
 
 

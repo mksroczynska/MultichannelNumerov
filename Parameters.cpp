@@ -210,6 +210,7 @@ void Parameters::loadB(std::string filename) {
 
     for (int i = 0; i < nSymmetries; ++i) {
         auto filenameB = filename + std::to_string(i) + ".dat";
+        std::cout << filenameB;
         bool success_loading_B = (B_temp.slice(i)).load(filenameB);
         if (not success_loading_B)
             throw std::logic_error("File with B_" + std::to_string(i) + " matrix does not exist");
@@ -311,11 +312,17 @@ void Parameters::setXValues() {
 
 bool Parameters::checkNumberOfRowsInFile(std::string filename, const int required_number_of_rows) {
     std::ifstream file(filename);
+    std::cout << filename;
     int calculated_number_of_rows = 0;
     std::string line;
     while (std::getline(file, line))
         calculated_number_of_rows++;
-    return calculated_number_of_rows == required_number_of_rows;
+    if(calculated_number_of_rows == required_number_of_rows)
+        return true;
+    else{
+        std::cout << "Required number of rows: " << required_number_of_rows << ", calculated:" <<calculated_number_of_rows << '\n';
+        return false;
+    }
 }
 
 
